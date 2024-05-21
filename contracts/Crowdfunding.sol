@@ -64,7 +64,7 @@ contract Crowfunding {
     }
 
     function isFundSucccess() public view returns (bool) {
-        if (address(block.address).balance >= targetFunds || fundsWithdrawn) {
+        if (address(this).balance >= targetFunds || fundsWithdrawn) {
             return true;
         } else {
             return false;
