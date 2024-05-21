@@ -64,7 +64,7 @@ contract Crowfunding {
     ***REMOVED***
 
     function isFundSucccess() public view returns (bool) {
-        if (address(block.address).balance >= targetFunds || fundsWithdrawn) {
+        if (address(this).balance >= targetFunds || fundsWithdrawn) {
             return true;
         ***REMOVED*** else {
             return false;
