@@ -1,2 +1,2 @@
 # crowdfunding-dao
-Simpe crowdfunding dao implementation using solidity
+Simple crowdfunding dao implementation using solidity
