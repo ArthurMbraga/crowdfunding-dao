@@ -1,7 +1,13 @@
 {
   "name": "hardhat-project",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy": "thirdweb deploy"
+  ***REMOVED***,
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "hardhat": "^2.22.4"
+    "hardhat": "^2.22.4",
+    "thirdweb": "^5.25.1"
   ***REMOVED***
 ***REMOVED***
