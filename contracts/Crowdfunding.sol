@@ -2,69 +2,129 @@
 pragma solidity ^0.8.24;
 
 contract Crowfunding {
-    mapping(address => uint256) public funders;
-    uint256 public deadLine;
-    uint256 public targetFunds;
-    string public name;
-    address public owner;
-    bool public fundsWithdrawn;
+    struct Campaign {
+        uint256 amountCollected;
+        mapping(address => uint256) funders;
+        uint256 deadline;
+        uint256 targetFounds;
+        string title;
+        address owner;
+        bool fundsWithdrawn;
+    }
+    mapping(uint256 => Campaign) public campaigns;
+    uint256 public numberOfCampaigns = 0;
 
-    event Funded(address _funder, uint256 _amount);
-    event OwnerWithdraw(uint256 _amount);
-    event FunderWithdraw(address _funder, uint256 _amount);
+    event Funded(uint256 _id, address _funder, uint256 _amount);
+    event OwnerWithdraw(uint256 _id, uint256 _amount);
+    event FunderWithdraw(uint256 _id, address _funder, uint256 _amount);
 
-    constructor(
-        string memory _name,
+    function createCampaign(
+        string memory _title,
         uint256 _targetFunds,
         uint256 _deadline
-    ) public {
-        owner = msg.sender;
-        name = _name;
-        targetFunds = _targetFunds;
-        deadLine = _deadline;
+    ) public returns (uint256) {
+        uint256 campaignId = numberOfCampaigns;
+
+        Campaign storage campaign = campaigns[campaignId];
+
+        require(
+            campaign.deadline < block.timestamp,
+            "The deadline should be a date in the future."
+        );
+
+        campaign.owner = msg.sender;
+        campaign.title = _title;
+        campaign.targetFounds = _targetFunds;
+        campaign.deadline = _deadline;
+        campaign.amountCollected = 0;
+
+        numberOfCampaigns++;
+
+        return campaignId;
     }
 
-    function fund() public payable {
-        require(isFundEnabled() == true, "Fund is now disabled!");
+    function donateToCampaign(uint256 _id) public payable {
+        require(isFundEnabled(_id) == true, "Fund is now disabled!");
 
-        funders[msg.sender] += msg.value;
-        emit Funded(msg.sender, msg.value);
+        Campaign storage campaign = campaigns[_id];
+        uint256 amount = msg.value;
+
+        campaign.funders[msg.sender] += amount;
+        campaign.amountCollected = campaign.amountCollected + amount;
+        emit Funded(_id, msg.sender, amount);
     }
 
-    function withdrawOwner() public {
-        require(msg.sender == owner, "Only owner can withdraw funds!");
-        require(isFundSucccess() == true, "Funds not yet reached target!");
+    function getDonators(uint256 _id) public view returns (uint256[] memory) {
+        uint256[] memory donators = new uint256[](numberOfCampaigns);
+        for (uint256 i = 0; i < numberOfCampaigns; i++) {
+            donators[i] = campaigns[_id].funders[msg.sender];
+        }
+        return donators;
+    }
+
+    function getCampaigns()
+        public
+        view
+        returns (uint256[] memory, string[] memory)
+    {
+        uint256[] memory ids = new uint256[](numberOfCampaigns);
+        string[] memory titles = new string[](numberOfCampaigns);
+
+        for (uint256 i = 0; i < numberOfCampaigns; i++) {
+            Campaign storage campaign = campaigns[i];
+            ids[i] = i;
+            titles[i] = campaign.title;
+        }
+
+        return (ids, titles);
+    }
+
+    function withdrawOwner(uint256 _id) public {
+        Campaign storage campaign = campaigns[_id];
+
+        require(msg.sender == campaign.owner, "Only owner can withdraw funds!");
+        require(isFundSucccess(_id) == true, "Funds not yet reached target!");
 
         uint256 amountToSend = address(this).balance;
         (bool success, ) = msg.sender.call{value: amountToSend}("");
         require(success, "Failed to send funds to owner!");
-        fundsWithdrawn = true;
-        emit OwnerWithdraw(amountToSend);
+        campaign.fundsWithdrawn = true;
+
+        emit OwnerWithdraw(_id, amountToSend);
     }
 
-    function withdrawFunder() public {
+    function withdrawFunder(uint256 _id) public {
         require(
-            isFundEnabled() == false && isFundSucccess() == false,
+            isFundEnabled(_id) == false && isFundSucccess(_id) == false,
             "Fund is still enabled or funds reached target!"
         );
 
-        uint256 amountToSend = funders[msg.sender];
+        Campaign storage campaign = campaigns[_id];
+
+        uint256 amountToSend = campaign.funders[msg.sender];
         (bool success, ) = msg.sender.call{value: amountToSend}("");
         require(success, "Failed to send funds to funder!");
-        funders[msg.sender] = 0;
-        emit FunderWithdraw(msg.sender, amountToSend);
+        campaign.funders[msg.sender] = 0;
+        emit FunderWithdraw(_id, msg.sender, amountToSend);
     }
 
-    function isFundEnabled() public view returns (bool) {
-        if (block.timestamp > deadLine || fundsWithdrawn) {
+    function isFundEnabled(uint256 _id) public view returns (bool) {
+        Campaign storage campaign = campaigns[_id];
+
+        if (block.timestamp > campaign.deadline || campaign.fundsWithdrawn) {
             return false;
         } else {
             return true;
         }
     }
 
-    function isFundSucccess() public view returns (bool) {
-        if (address(this).balance >= targetFunds || fundsWithdrawn) {
+    function isFundSucccess(uint256 _id) public view returns (bool) {
+        Campaign storage campaign = campaigns[_id];
+
+        if (
+            address(this).balance >= campaign.targetFounds ||
+            campaign.fundsWithdrawn
+        ) {
             return true;
         } else {
             return false;
