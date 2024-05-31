@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/governance/Governor.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol";
+import "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
@@ -16,31 +17,33 @@ contract Governance is
     GovernorVotesQuorumFraction,
     GovernorTimelockControl
 {
-    uint256 public votingDelay_;
-    uint256 public votingPeriod_;
-
     constructor(
+        string memory _name,
         ERC20Votes _token,
         TimelockController _timelock,
         uint256 _quorum,
         uint256 _votingDelay,
         uint256 _votingPeriod
     )
-        Governor("DApp University DAO")
+        Governor(_name)
+        GovernorSettings(_votingDelay, _votingPeriod, 0) 
         GovernorVotes(_token)
         GovernorVotesQuorumFraction(_quorum)
-        GovernorTimelockControl(_timelock)
-    {
-        votingDelay_ = _votingDelay;
-        votingPeriod_ = _votingPeriod;
+        GovernorTimelockControl(_timelock) 
+    {}
+
+    function votingDelay() 
+        public view 
+        override(Governor) 
+        returns (uint256) {
+        return super.votingDelay();
     }
 
-    function votingDelay() public view override returns (uint256) {
-        return votingDelay_;
-    }
-
-    function votingPeriod() public view override returns (uint256) {
-        return votingPeriod_;
+    function votingPeriod() 
+        public view 
+        override(Governor) 
+        returns (uint256) {
+        return super.votingPeriod();
     }
 
     // The following functions are overrides required by Solidity.
