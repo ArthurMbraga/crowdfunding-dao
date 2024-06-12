@@ -32,7 +32,7 @@ contract Campaign {
         managerToken = IERC20(_managerToken);
 
         emit CampaignCreated(_creator, _goal, deadline);
-    ***REMOVED***
+    }
 
     function contribute() external payable {
         require(block.timestamp < deadline, "Funding period is over");
@@ -43,7 +43,7 @@ contract Campaign {
         campaignToken.mint(msg.sender, msg.value);
 
         emit ContributionMade(msg.sender, msg.value);
-    ***REMOVED***
+    }
 
     function withdrawFunds() external {
         require(block.timestamp >= deadline, "Funding period is not over yet");
@@ -53,7 +53,7 @@ contract Campaign {
         payable(creator).transfer(fundsRaised);
 
         emit FundsWithdrawn(creator, fundsRaised);
-    ***REMOVED***
+    }
 
     function convertToManagerTokens() external {
         require(block.timestamp >= deadline, "Funding period is not over yet");
@@ -66,5 +66,5 @@ contract Campaign {
         managerToken.transfer(msg.sender, balance);
 
         emit TokensConverted(msg.sender, balance);
-    ***REMOVED***
-***REMOVED***
+    }
+}

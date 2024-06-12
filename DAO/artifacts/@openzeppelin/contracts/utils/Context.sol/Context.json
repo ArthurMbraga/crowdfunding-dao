@@ -5,6 +5,6 @@
   "abi": [],
   "bytecode": "0x",
   "deployedBytecode": "0x",
-  "linkReferences": {***REMOVED***,
-  "deployedLinkReferences": {***REMOVED***
-***REMOVED***
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

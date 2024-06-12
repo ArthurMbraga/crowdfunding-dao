@@ -8,15 +8,15 @@ contract CampaignToken is ERC20 {
 
     constructor(address _campaignAddress) ERC20("CampaignToken", "CPK") {
         campaignAddress = _campaignAddress;
-    ***REMOVED***
+    }
 
     function mint(address to, uint256 amount) external {
         require(msg.sender == campaignAddress, "Only campaign can mint tokens");
         _mint(to, amount);
-    ***REMOVED***
+    }
 
     function burn(address from, uint256 amount) external {
         require(msg.sender == campaignAddress, "Only campaign can burn tokens");
         _burn(from, amount);
-    ***REMOVED***
-***REMOVED***
+    }
+}

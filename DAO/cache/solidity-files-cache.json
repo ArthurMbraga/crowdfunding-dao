@@ -12,7 +12,7 @@
           "optimizer": {
             "enabled": false,
             "runs": 200
-          ***REMOVED***,
+          },
           "outputSelection": {
             "*": {
               "*": [
@@ -25,10 +25,10 @@
               "": [
                 "ast"
               ]
-            ***REMOVED***
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***,
+            }
+          }
+        }
+      },
       "imports": [
         "@openzeppelin/contracts/token/ERC20/IERC20.sol",
         "./CampaignToken.sol"
@@ -39,7 +39,7 @@
       "artifacts": [
         "Campaign"
       ]
-    ***REMOVED***,
+    },
     "/home/yuri/TelecomParis/MODS/MODS207/crowdfunding-dao/DAO/contracts/CampaignToken.sol": {
       "lastModificationDate": 1717164206213,
       "contentHash": "8681359b3ed6187665d340cccdbe22e8",
@@ -51,7 +51,7 @@
           "optimizer": {
             "enabled": false,
             "runs": 200
-          ***REMOVED***,
+          },
           "outputSelection": {
             "*": {
               "*": [
@@ -64,10 +64,10 @@
               "": [
                 "ast"
               ]
-            ***REMOVED***
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***,
+            }
+          }
+        }
+      },
       "imports": [
         "@openzeppelin/contracts/token/ERC20/ERC20.sol"
       ],
@@ -77,7 +77,7 @@
       "artifacts": [
         "CampaignToken"
       ]
-    ***REMOVED***,
+    },
     "/home/yuri/node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol": {
       "lastModificationDate": 1716985334021,
       "contentHash": "5517c8678c18eb1a8ba58810e7ca39ca",
@@ -89,7 +89,7 @@
           "optimizer": {
             "enabled": false,
             "runs": 200
-          ***REMOVED***,
+          },
           "outputSelection": {
             "*": {
               "*": [
@@ -102,10 +102,10 @@
               "": [
                 "ast"
               ]
-            ***REMOVED***
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***,
+            }
+          }
+        }
+      },
       "imports": [],
       "versionPragmas": [
         "^0.8.20"
@@ -113,7 +113,7 @@
       "artifacts": [
         "IERC20"
       ]
-    ***REMOVED***,
+    },
     "/home/yuri/node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol": {
       "lastModificationDate": 1716985334009,
       "contentHash": "c6375ef25e84c90b3d15f9ec4eef218f",
@@ -125,7 +125,7 @@
           "optimizer": {
             "enabled": false,
             "runs": 200
-          ***REMOVED***,
+          },
           "outputSelection": {
             "*": {
               "*": [
@@ -138,10 +138,10 @@
               "": [
                 "ast"
               ]
-            ***REMOVED***
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***,
+            }
+          }
+        }
+      },
       "imports": [
         "./IERC20.sol",
         "./extensions/IERC20Metadata.sol",
@@ -154,7 +154,7 @@
       "artifacts": [
         "ERC20"
       ]
-    ***REMOVED***,
+    },
     "/home/yuri/node_modules/@openzeppelin/contracts/interfaces/draft-IERC6093.sol": {
       "lastModificationDate": 1716985334005,
       "contentHash": "4aefc698f77ecbace7f401257dfe182d",
@@ -166,7 +166,7 @@
           "optimizer": {
             "enabled": false,
             "runs": 200
-          ***REMOVED***,
+          },
           "outputSelection": {
             "*": {
               "*": [
@@ -179,10 +179,10 @@
               "": [
                 "ast"
               ]
-            ***REMOVED***
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***,
+            }
+          }
+        }
+      },
       "imports": [],
       "versionPragmas": [
         "^0.8.20"
@@ -192,7 +192,7 @@
         "IERC20Errors",
         "IERC721Errors"
       ]
-    ***REMOVED***,
+    },
     "/home/yuri/node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
       "lastModificationDate": 1716985334021,
       "contentHash": "4c02fa6f7ae7b6c289cef80424f0c875",
@@ -204,7 +204,7 @@
           "optimizer": {
             "enabled": false,
             "runs": 200
-          ***REMOVED***,
+          },
           "outputSelection": {
             "*": {
               "*": [
@@ -217,10 +217,10 @@
               "": [
                 "ast"
               ]
-            ***REMOVED***
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***,
+            }
+          }
+        }
+      },
       "imports": [
         "../IERC20.sol"
       ],
@@ -230,7 +230,7 @@
       "artifacts": [
         "IERC20Metadata"
       ]
-    ***REMOVED***,
+    },
     "/home/yuri/node_modules/@openzeppelin/contracts/utils/Context.sol": {
       "lastModificationDate": 1716985334001,
       "contentHash": "67bfbc07588eb8683b3fd8f6f909563e",
@@ -242,7 +242,7 @@
           "optimizer": {
             "enabled": false,
             "runs": 200
-          ***REMOVED***,
+          },
           "outputSelection": {
             "*": {
               "*": [
@@ -255,10 +255,10 @@
               "": [
                 "ast"
               ]
-            ***REMOVED***
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***,
+            }
+          }
+        }
+      },
       "imports": [],
       "versionPragmas": [
         "^0.8.20"
@@ -266,7 +266,7 @@
       "artifacts": [
         "Context"
       ]
-    ***REMOVED***,
+    },
     "/home/yuri/TelecomParis/MODS/MODS207/crowdfunding-dao/DAO/contracts/DAO.sol": {
       "lastModificationDate": 1718200098808,
       "contentHash": "08a4123437e035255707edf2b6344a92",
@@ -278,7 +278,7 @@
           "optimizer": {
             "enabled": false,
             "runs": 200
-          ***REMOVED***,
+          },
           "outputSelection": {
             "*": {
               "*": [
@@ -291,10 +291,10 @@
               "": [
                 "ast"
               ]
-            ***REMOVED***
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***,
+            }
+          }
+        }
+      },
       "imports": [
         "./ManagerToken.sol",
         "./Campaign.sol"
@@ -305,7 +305,7 @@
       "artifacts": [
         "DAO"
       ]
-    ***REMOVED***,
+    },
     "/home/yuri/TelecomParis/MODS/MODS207/crowdfunding-dao/DAO/contracts/ManagerToken.sol": {
       "lastModificationDate": 1718202621675,
       "contentHash": "a538e02c4fc91caad34540684b41f06f",
@@ -317,7 +317,7 @@
           "optimizer": {
             "enabled": false,
             "runs": 200
-          ***REMOVED***,
+          },
           "outputSelection": {
             "*": {
               "*": [
@@ -330,10 +330,10 @@
               "": [
                 "ast"
               ]
-            ***REMOVED***
-          ***REMOVED***
-        ***REMOVED***
-      ***REMOVED***,
+            }
+          }
+        }
+      },
       "imports": [
         "@openzeppelin/contracts/token/ERC20/ERC20.sol"
       ],
@@ -343,6 +343,6 @@
       "artifacts": [
         "ManagerToken"
       ]
-    ***REMOVED***
-  ***REMOVED***
-***REMOVED***
+    }
+  }
+}

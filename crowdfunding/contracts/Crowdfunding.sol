@@ -10,7 +10,7 @@ contract Crowfunding {
         string title;
         address owner;
         bool fundsWithdrawn;
-    ***REMOVED***
+    }
     mapping(uint256 => Campaign) public campaigns;
     uint256 public numberOfCampaigns = 0;
 
@@ -41,7 +41,7 @@ contract Crowfunding {
         numberOfCampaigns++;
 
         return campaignId;
-    ***REMOVED***
+    }
 
     function donateToCampaign(uint256 _id) public payable {
         require(isFundEnabled(_id) == true, "Fund is now disabled!");
@@ -52,15 +52,15 @@ contract Crowfunding {
         campaign.funders[msg.sender] += amount;
         campaign.amountCollected = campaign.amountCollected + amount;
         emit Funded(_id, msg.sender, amount);
-    ***REMOVED***
+    }
 
     function getDonators(uint256 _id) public view returns (uint256[] memory) {
         uint256[] memory donators = new uint256[](numberOfCampaigns);
         for (uint256 i = 0; i < numberOfCampaigns; i++) {
             donators[i] = campaigns[_id].funders[msg.sender];
-        ***REMOVED***
+        }
         return donators;
-    ***REMOVED***
+    }
 
     function getCampaigns()
         public
@@ -74,10 +74,10 @@ contract Crowfunding {
             Campaign storage campaign = campaigns[i];
             ids[i] = i;
             titles[i] = campaign.title;
-        ***REMOVED***
+        }
 
         return (ids, titles);
-    ***REMOVED***
+    }
 
     function withdrawOwner(uint256 _id) public {
         Campaign storage campaign = campaigns[_id];
@@ -86,12 +86,12 @@ contract Crowfunding {
         require(isFundSucccess(_id) == true, "Funds not yet reached target!");
 
         uint256 amountToSend = address(this).balance;
-        (bool success, ) = msg.sender.call{value: amountToSend***REMOVED***("");
+        (bool success, ) = msg.sender.call{value: amountToSend}("");
         require(success, "Failed to send funds to owner!");
         campaign.fundsWithdrawn = true;
 
         emit OwnerWithdraw(_id, amountToSend);
-    ***REMOVED***
+    }
 
     function withdrawFunder(uint256 _id) public {
         require(
@@ -102,21 +102,21 @@ contract Crowfunding {
         Campaign storage campaign = campaigns[_id];
 
         uint256 amountToSend = campaign.funders[msg.sender];
-        (bool success, ) = msg.sender.call{value: amountToSend***REMOVED***("");
+        (bool success, ) = msg.sender.call{value: amountToSend}("");
         require(success, "Failed to send funds to funder!");
         campaign.funders[msg.sender] = 0;
         emit FunderWithdraw(_id, msg.sender, amountToSend);
-    ***REMOVED***
+    }
 
     function isFundEnabled(uint256 _id) public view returns (bool) {
         Campaign storage campaign = campaigns[_id];
 
         if (block.timestamp > campaign.deadline || campaign.fundsWithdrawn) {
             return false;
-        ***REMOVED*** else {
+        } else {
             return true;
-        ***REMOVED***
-    ***REMOVED***
+        }
+    }
 
     function isFundSucccess(uint256 _id) public view returns (bool) {
         Campaign storage campaign = campaigns[_id];
@@ -126,8 +126,8 @@ contract Crowfunding {
             campaign.fundsWithdrawn
         ) {
             return true;
-        ***REMOVED*** else {
+        } else {
             return false;
-        ***REMOVED***
-    ***REMOVED***
-***REMOVED***
+        }
+    }
+}

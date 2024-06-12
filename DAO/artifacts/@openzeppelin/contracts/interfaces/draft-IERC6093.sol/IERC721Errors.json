@@ -9,106 +9,106 @@
           "internalType": "address",
           "name": "sender",
           "type": "address"
-        ***REMOVED***,
+        },
         {
           "internalType": "uint256",
           "name": "tokenId",
           "type": "uint256"
-        ***REMOVED***,
+        },
         {
           "internalType": "address",
           "name": "owner",
           "type": "address"
-        ***REMOVED***
+        }
       ],
       "name": "ERC721IncorrectOwner",
       "type": "error"
-    ***REMOVED***,
+    },
     {
       "inputs": [
         {
           "internalType": "address",
           "name": "operator",
           "type": "address"
-        ***REMOVED***,
+        },
         {
           "internalType": "uint256",
           "name": "tokenId",
           "type": "uint256"
-        ***REMOVED***
+        }
       ],
       "name": "ERC721InsufficientApproval",
       "type": "error"
-    ***REMOVED***,
+    },
     {
       "inputs": [
         {
           "internalType": "address",
           "name": "approver",
           "type": "address"
-        ***REMOVED***
+        }
       ],
       "name": "ERC721InvalidApprover",
       "type": "error"
-    ***REMOVED***,
+    },
     {
       "inputs": [
         {
           "internalType": "address",
           "name": "operator",
           "type": "address"
-        ***REMOVED***
+        }
       ],
       "name": "ERC721InvalidOperator",
       "type": "error"
-    ***REMOVED***,
+    },
     {
       "inputs": [
         {
           "internalType": "address",
           "name": "owner",
           "type": "address"
-        ***REMOVED***
+        }
       ],
       "name": "ERC721InvalidOwner",
       "type": "error"
-    ***REMOVED***,
+    },
     {
       "inputs": [
         {
           "internalType": "address",
           "name": "receiver",
           "type": "address"
-        ***REMOVED***
+        }
       ],
       "name": "ERC721InvalidReceiver",
       "type": "error"
-    ***REMOVED***,
+    },
     {
       "inputs": [
         {
           "internalType": "address",
           "name": "sender",
           "type": "address"
-        ***REMOVED***
+        }
       ],
       "name": "ERC721InvalidSender",
       "type": "error"
-    ***REMOVED***,
+    },
     {
       "inputs": [
         {
           "internalType": "uint256",
           "name": "tokenId",
           "type": "uint256"
-        ***REMOVED***
+        }
       ],
       "name": "ERC721NonexistentToken",
       "type": "error"
-    ***REMOVED***
+    }
   ],
   "bytecode": "0x",
   "deployedBytecode": "0x",
-  "linkReferences": {***REMOVED***,
-  "deployedLinkReferences": {***REMOVED***
-***REMOVED***
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

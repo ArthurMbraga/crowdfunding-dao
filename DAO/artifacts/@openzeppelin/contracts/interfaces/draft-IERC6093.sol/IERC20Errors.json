@@ -9,89 +9,89 @@
           "internalType": "address",
           "name": "spender",
           "type": "address"
-        ***REMOVED***,
+        },
         {
           "internalType": "uint256",
           "name": "allowance",
           "type": "uint256"
-        ***REMOVED***,
+        },
         {
           "internalType": "uint256",
           "name": "needed",
           "type": "uint256"
-        ***REMOVED***
+        }
       ],
       "name": "ERC20InsufficientAllowance",
       "type": "error"
-    ***REMOVED***,
+    },
     {
       "inputs": [
         {
           "internalType": "address",
           "name": "sender",
           "type": "address"
-        ***REMOVED***,
+        },
         {
           "internalType": "uint256",
           "name": "balance",
           "type": "uint256"
-        ***REMOVED***,
+        },
         {
           "internalType": "uint256",
           "name": "needed",
           "type": "uint256"
-        ***REMOVED***
+        }
       ],
       "name": "ERC20InsufficientBalance",
       "type": "error"
-    ***REMOVED***,
+    },
     {
       "inputs": [
         {
           "internalType": "address",
           "name": "approver",
           "type": "address"
-        ***REMOVED***
+        }
       ],
       "name": "ERC20InvalidApprover",
       "type": "error"
-    ***REMOVED***,
+    },
     {
       "inputs": [
         {
           "internalType": "address",
           "name": "receiver",
           "type": "address"
-        ***REMOVED***
+        }
       ],
       "name": "ERC20InvalidReceiver",
       "type": "error"
-    ***REMOVED***,
+    },
     {
       "inputs": [
         {
           "internalType": "address",
           "name": "sender",
           "type": "address"
-        ***REMOVED***
+        }
       ],
       "name": "ERC20InvalidSender",
       "type": "error"
-    ***REMOVED***,
+    },
     {
       "inputs": [
         {
           "internalType": "address",
           "name": "spender",
           "type": "address"
-        ***REMOVED***
+        }
       ],
       "name": "ERC20InvalidSpender",
       "type": "error"
-    ***REMOVED***
+    }
   ],
   "bytecode": "0x",
   "deployedBytecode": "0x",
-  "linkReferences": {***REMOVED***,
-  "deployedLinkReferences": {***REMOVED***
-***REMOVED***
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

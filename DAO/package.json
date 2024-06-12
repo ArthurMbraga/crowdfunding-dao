@@ -4,11 +4,14 @@
     "compile": "hardhat compile",
     "test": "hardhat test",
     "deploy": "thirdweb deploy"
-  ***REMOVED***,
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "ethers": "^6.7.0",
     "hardhat": "^2.22.4",
     "thirdweb": "^5.26.0"
-  ***REMOVED***
-***REMOVED***
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}

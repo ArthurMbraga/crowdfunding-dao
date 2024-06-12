@@ -11,7 +11,7 @@ contract DAO {
         address campaign;
         uint256 approvals;
         mapping(address => bool) approvedBy;
-    ***REMOVED***
+    }
 
     mapping(address => CampaignProposal) public campaignProposals;
     uint256 public totalManagerTokens;
@@ -27,8 +27,8 @@ contract DAO {
 
         for (uint256 i = 0; i < initialRecipients.length; i++) {
             managerToken.transfer(initialRecipients[i], initialAmounts[i]);
-        ***REMOVED***
-    ***REMOVED***
+        }
+    }
 
     function createCampaign(uint256 goal, uint256 deadline) external returns (address) {
         Campaign campaign = new Campaign(msg.sender, goal, deadline, address(managerToken));
@@ -40,7 +40,7 @@ contract DAO {
         emit CampaignCreated(campaignAddress, msg.sender, goal, deadline);
 
         return campaignAddress;
-    ***REMOVED***
+    }
 
     function approveCampaign(address campaignAddress) external {
         require(managerToken.balanceOf(msg.sender) > 0, "Only managers can approve campaigns");
@@ -56,13 +56,13 @@ contract DAO {
 
         if (isCampaignApproved(campaignAddress)) {
             approvedCampaigns[campaignAddress] = true;
-        ***REMOVED***
-    ***REMOVED***
+        }
+    }
 
     function isCampaignApproved(address campaignAddress) public view returns (bool) {
         CampaignProposal storage proposal = campaignProposals[campaignAddress];
         return proposal.approvals >= (totalManagerTokens * 66) / 100;
-    ***REMOVED***
+    }
 
     mapping(address => bool) public approvedCampaigns;
-***REMOVED***
+}
