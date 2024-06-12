@@ -13,9 +13,9 @@ async function deployDAO() {
     const daoFactory = new ethers.ContractFactory(daoAbi, daoBytecode, signer);
 
     const initialRecipients = [
-        "0x2Bc63e7413AE6193c7D617Ef9835c99340cF4a85",
-        "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+        process.env.WALLET_ADDRESS1,
+        process.env.WALLET_ADDRESS2,
+        process.env.WALLET_ADDRESS3,
     ];
     const initialAmounts = [
         ethers.parseUnits("1000", 18),
