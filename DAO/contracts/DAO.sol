@@ -115,7 +115,7 @@ contract DAO {
         require(proposal.campaign != address(0), "Campaign does not exist");
         require(!isCampaignApproved(campaignAddress), "Campaign is already approved");
 
-        if (block.timestamp > proposal.creationTime + 2 minutes) {
+        if (block.timestamp > proposal.creationTime + 5 minutes) {
             rejectedCampaigns.push(campaignAddress);
             removeProposedCampaign(campaignAddress);
             emit CampaignRejected(campaignAddress);
