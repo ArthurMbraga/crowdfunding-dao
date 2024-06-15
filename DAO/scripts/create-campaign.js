@@ -15,7 +15,7 @@ async function main() {
 
     const daoContract = new ethers.Contract(daoAddress, daoAbi, signer);
 
-    const tx = await daoContract.createCampaign(ethers.parseUnits("100", 18), 600);
+    const tx = await daoContract.createCampaign("Teste", ethers.parseUnits("100", 18), 600);
     await tx.wait();
 
     console.log("Campaign created successfully");

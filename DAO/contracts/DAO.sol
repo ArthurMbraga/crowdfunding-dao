@@ -39,6 +39,9 @@ contract DAO {
     }
 
     function createCampaign(string memory title, uint256 goal, uint256 deadline) external returns (address) {
+        require(goal > 0, "Goal must be greater than zero");
+        require(deadline > 0, "Deadline must be greater than zero");
+
         Campaign campaign = new Campaign(msg.sender, title, goal, deadline, address(managerToken), address(this));
         address campaignAddress = address(campaign);
 
@@ -78,7 +81,7 @@ contract DAO {
         Campaign campaign = Campaign(campaignAddress);
         require(isFundEnabled(campaign), "Campaign is not accepting funds");
 
-        campaign.fund{value: msg.value}(msg.sender);
+        campaign.donate{value: msg.value}(msg.sender);
     }
 
     function isFundEnabled(Campaign campaign) internal returns (bool) {
@@ -127,13 +130,11 @@ contract DAO {
         }
     }
 
-    // TODO: Correct bug in this function
     function checkAndRejectExpiredProposals() external {
-        uint256 length = proposedCampaignsList.length;
-        for (uint256 i = 0; i < length; i++) {
-            address campaignAddress = proposedCampaignsList[i];
-            checkAndExpire(campaignAddress);
-        }
+        for (uint256 i = proposedCampaignsList.length; i > 0; i--) {
+        address campaignAddress = proposedCampaignsList[i - 1];
+        checkAndExpire(campaignAddress);
+    }
     }
 
     function checkAndExpire(address campaignAddress) internal {
@@ -156,4 +157,29 @@ contract DAO {
         }
         return false;
     }
+
+    function getSuccessfulCampaigns() public view returns (address[] memory) {
+        return successfulCampaigns;
+    }
+
+    function getFailedCampaigns() public view returns (address[] memory) {
+        return failedCampaigns;
+    }
+
+    function getCampaignFunders(address campaignAddress) public view returns (address[] memory) {
+        Campaign campaign = Campaign(campaignAddress);
+        return campaign.getFunders();
+    }
+
+    function getCampaignFundsRaised(address campaignAddress) public view returns (uint256) {
+        Campaign campaign = Campaign(campaignAddress);
+        return campaign.getFundsRaised();
+    }
+
+    function refund(address campaignAddress) public {
+        require(isCampaignInList(campaignAddress, failedCampaigns), "Campaign is not failed");
+        Campaign campaign = Campaign(campaignAddress);
+        campaign.refund();
+    }
+
 }

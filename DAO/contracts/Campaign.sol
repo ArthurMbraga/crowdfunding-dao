@@ -16,11 +16,13 @@ contract Campaign {
     address public dao;
 
     mapping(address => uint256) funders;
+     address[] public funderAddresses;
 
     event CampaignCreated(address indexed owner, uint256 goal, uint256 deadline);
-    event ContributionMade(address indexed contributor, uint256 amount);
+    event FundMade(address indexed contributor, uint256 amount);
     event FundsWithdrawn(address indexed owner, uint256 amount);
     event TokensConverted(address indexed contributor, uint256 amount);
+    event RefundIssued(address indexed funder, uint256 amount);
 
     constructor(
         address _owner,
@@ -53,19 +55,26 @@ contract Campaign {
         _;
     }
 
-    function fund(address funder) external payable onlyDAO {
+    function donate(address funder) external payable onlyDAO {
+        if (funders[funder] == 0) {
+            funderAddresses.push(funder);
+        }
+        require(block.timestamp < deadline, "Funding period is over");
+        require(msg.value > 0, "Fund must be greater than zero");
+
         fundsRaised += msg.value;
         funders[funder] += msg.value;
         campaignToken.mint(funder, msg.value);
 
-        emit ContributionMade(msg.sender, msg.value);
+        emit FundMade(funder, msg.value);
     }
 
-    function withdrawFunds() external {
+    function withdrawFunds() external onlyOwner {
         require(block.timestamp >= deadline, "Funding period is not over yet");
         require(fundsRaised >= goal, "Funding goal not reached");
-        require(msg.sender == owner, "Only owner can withdraw funds");
+        require(!fundsWithdrawn, "Funds already withdrawn");
 
+        fundsWithdrawn = true;
         payable(owner).transfer(fundsRaised);
 
         emit FundsWithdrawn(owner, fundsRaised);
@@ -84,6 +93,19 @@ contract Campaign {
         emit TokensConverted(msg.sender, balance);
     }
 
+    function refund() external {
+        require(block.timestamp >= deadline, "Funding period is not over yet");
+        require(fundsRaised < goal, "Funding goal was reached");
+
+        uint256 fund = funders[msg.sender];
+        require(fund > 0, "No funds to refund");
+
+        funders[msg.sender] = 0;
+        payable(msg.sender).transfer(fund);
+
+        emit RefundIssued(msg.sender, fund);
+    }
+
     function getDeadline() external view returns (uint256) {
         return deadline;
     }
@@ -98,5 +120,9 @@ contract Campaign {
 
     function getGoal() external view returns (uint256) {
         return goal;
+    }
+
+    function getFunders() external view returns (address[] memory) {
+        return funderAddresses;
     }
 }
