@@ -52,7 +52,7 @@ contract DAO {
 
     function approveCampaign(address campaignAddress) external {
         require(managerToken.balanceOf(msg.sender) > 0, "Only managers can approve campaigns");
-        checkAndRejectExpiredProposals();
+        checkAndExpire(campaignAddress);
         require(isInProposedCampaignsList(campaignAddress), "Campaign is not in proposed campaigns list");
 
         ProposedCampaign storage proposal = proposedCampaigns[campaignAddress];
@@ -103,18 +103,24 @@ contract DAO {
     }
 
     function checkAndRejectExpiredProposals() external {
-        uint256 currentTime = block.timestamp;
-        for (uint256 i = 0; i < proposedCampaignsList.length; i++) {
+        uint256 length = proposedCampaignsList.length;
+        for (uint256 i = 0; i < length; i++) {
             address campaignAddress = proposedCampaignsList[i];
-            ProposedCampaign storage proposal = proposedCampaigns[campaignAddress];
-            if (currentTime > proposal.creationTime + 10 minutes) {
-                rejectedCampaigns.push(campaignAddress);
-                removeProposedCampaign(campaignAddress);
-                emit CampaignRejected(campaignAddress);
-                i--; // Adjust index after removal
-            }
+            checkAndExpire(campaignAddress);
         }
     }
+
+    function checkAndExpire(address campaignAddress) internal {
+        ProposedCampaign storage proposal = proposedCampaigns[campaignAddress];
+        require(proposal.campaign != address(0), "Campaign does not exist");
+        require(!isCampaignApproved(campaignAddress), "Campaign is already approved");
+
+        if (block.timestamp > proposal.creationTime + 2 minutes) {
+            rejectedCampaigns.push(campaignAddress);
+            removeProposedCampaign(campaignAddress);
+            emit CampaignRejected(campaignAddress);
+        }
+    }    
 
     function isInProposedCampaignsList(address campaignAddress) internal view returns (bool) {
         for (uint256 i = 0; i < proposedCampaignsList.length; i++) {
