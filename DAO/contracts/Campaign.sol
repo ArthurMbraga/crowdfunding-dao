@@ -5,42 +5,58 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./CampaignToken.sol";
 
 contract Campaign {
-    address public creator;
+    address public owner;
+    string  public title;
     uint256 public goal;
     uint256 public deadline;
     uint256 public fundsRaised;
+    bool    public fundsWithdrawn;
     CampaignToken public campaignToken;
     IERC20 public managerToken;
+    address public dao;
 
-    mapping(address => uint256) public contributions;
+    mapping(address => uint256) funders;
 
-    event CampaignCreated(address indexed creator, uint256 goal, uint256 deadline);
+    event CampaignCreated(address indexed owner, uint256 goal, uint256 deadline);
     event ContributionMade(address indexed contributor, uint256 amount);
-    event FundsWithdrawn(address indexed creator, uint256 amount);
+    event FundsWithdrawn(address indexed owner, uint256 amount);
     event TokensConverted(address indexed contributor, uint256 amount);
 
     constructor(
-        address _creator,
+        address _owner,
+        string  memory _title,
         uint256 _goal,
         uint256 _deadline,
-        address _managerToken
+        address _managerToken,
+        address _dao
     ) {
-        creator = _creator;
+        owner = _owner;
+        title = _title;
         goal = _goal;
         deadline = block.timestamp + _deadline;
+        fundsRaised = 0;
+        fundsWithdrawn = false;
         campaignToken = new CampaignToken(address(this));
         managerToken = IERC20(_managerToken);
+        dao = _dao;
 
-        emit CampaignCreated(_creator, _goal, deadline);
+        emit CampaignCreated(_owner, _goal, deadline);
     }
 
-    function contribute() external payable {
-        require(block.timestamp < deadline, "Funding period is over");
-        require(msg.value > 0, "Contribution must be greater than zero");
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can call this function");
+        _;
+    }
 
+    modifier onlyDAO() {
+        require(msg.sender == dao, "Only DAO can call this function");
+        _;
+    }
+
+    function fund(address funder) external payable onlyDAO {
         fundsRaised += msg.value;
-        contributions[msg.sender] += msg.value;
-        campaignToken.mint(msg.sender, msg.value);
+        funders[funder] += msg.value;
+        campaignToken.mint(funder, msg.value);
 
         emit ContributionMade(msg.sender, msg.value);
     }
@@ -48,11 +64,11 @@ contract Campaign {
     function withdrawFunds() external {
         require(block.timestamp >= deadline, "Funding period is not over yet");
         require(fundsRaised >= goal, "Funding goal not reached");
-        require(msg.sender == creator, "Only creator can withdraw funds");
+        require(msg.sender == owner, "Only owner can withdraw funds");
 
-        payable(creator).transfer(fundsRaised);
+        payable(owner).transfer(fundsRaised);
 
-        emit FundsWithdrawn(creator, fundsRaised);
+        emit FundsWithdrawn(owner, fundsRaised);
     }
 
     function convertToManagerTokens() external {
@@ -66,5 +82,21 @@ contract Campaign {
         managerToken.transfer(msg.sender, balance);
 
         emit TokensConverted(msg.sender, balance);
+    }
+
+    function getDeadline() external view returns (uint256) {
+        return deadline;
+    }
+
+    function isFundsWithdrawn() external view returns (bool) {
+        return fundsWithdrawn;
+    }
+
+    function getFundsRaised() external view returns (uint256) {
+        return fundsRaised;
+    }
+
+    function getGoal() external view returns (uint256) {
+        return goal;
     }
 }

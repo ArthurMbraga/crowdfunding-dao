@@ -20,6 +20,8 @@ contract DAO {
     address[] private proposedCampaignsList;
     address[] private listedCampaigns;
     address[] private rejectedCampaigns;
+    address[] private successfulCampaigns;
+    address[] private failedCampaigns;
 
     event CampaignCreated(address indexed campaignAddress, address indexed creator, uint256 goal, uint256 deadline);
     event CampaignApproved(address indexed campaignAddress, address indexed approver, uint256 approvals);
@@ -36,8 +38,8 @@ contract DAO {
         }
     }
 
-    function createCampaign(uint256 goal, uint256 deadline) external returns (address) {
-        Campaign campaign = new Campaign(msg.sender, goal, deadline, address(managerToken));
+    function createCampaign(string memory title, uint256 goal, uint256 deadline) external returns (address) {
+        Campaign campaign = new Campaign(msg.sender, title, goal, deadline, address(managerToken), address(this));
         address campaignAddress = address(campaign);
 
         ProposedCampaign storage proposal = proposedCampaigns[campaignAddress];
@@ -53,7 +55,7 @@ contract DAO {
     function approveCampaign(address campaignAddress) external {
         require(managerToken.balanceOf(msg.sender) > 0, "Only managers can approve campaigns");
         checkAndExpire(campaignAddress);
-        require(isInProposedCampaignsList(campaignAddress), "Campaign is not in proposed campaigns list");
+        require(isCampaignInList(campaignAddress, proposedCampaignsList), "Campaign is not in proposed campaigns list");
 
         ProposedCampaign storage proposal = proposedCampaigns[campaignAddress];
         require(proposal.campaign != address(0), "Campaign does not exist");
@@ -66,7 +68,30 @@ contract DAO {
 
         if (isCampaignApproved(campaignAddress)) {
             listedCampaigns.push(campaignAddress);
-            removeProposedCampaign(campaignAddress);
+            removeCampaignFromList(campaignAddress, proposedCampaignsList);
+        }
+    }
+
+    function fundCampaign(address campaignAddress) external payable {
+        require(msg.value > 0, "Contribution must be greater than zero");
+        require(isCampaignInList(campaignAddress, listedCampaigns), "Campaign is not listed");
+        Campaign campaign = Campaign(campaignAddress);
+        require(isFundEnabled(campaign), "Campaign is not accepting funds");
+
+        campaign.fund{value: msg.value}(msg.sender);
+    }
+
+    function isFundEnabled(Campaign campaign) internal returns (bool) {
+        if (block.timestamp > campaign.getDeadline() || campaign.isFundsWithdrawn()) {
+            if (campaign.getFundsRaised() < campaign.getGoal()) {
+                failedCampaigns.push(address(campaign));
+            } else {
+                successfulCampaigns.push(address(campaign));
+            }
+            removeCampaignFromList(address(campaign), listedCampaigns);
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -92,16 +117,17 @@ contract DAO {
         return rejectedCampaigns;
     }
 
-    function removeProposedCampaign(address campaignAddress) internal {
-        for (uint256 i = 0; i < proposedCampaignsList.length; i++) {
-            if (proposedCampaignsList[i] == campaignAddress) {
-                proposedCampaignsList[i] = proposedCampaignsList[proposedCampaignsList.length - 1];
-                proposedCampaignsList.pop();
+    function removeCampaignFromList(address campaignAddress, address[] storage list) internal {
+        for (uint256 i = 0; i < list.length; i++) {
+            if (list[i] == campaignAddress) {
+                list[i] = list[list.length - 1];
+                list.pop();
                 break;
             }
         }
     }
 
+    // TODO: Correct bug in this function
     function checkAndRejectExpiredProposals() external {
         uint256 length = proposedCampaignsList.length;
         for (uint256 i = 0; i < length; i++) {
@@ -117,14 +143,14 @@ contract DAO {
 
         if (block.timestamp > proposal.creationTime + 5 minutes) {
             rejectedCampaigns.push(campaignAddress);
-            removeProposedCampaign(campaignAddress);
+            removeCampaignFromList(campaignAddress, proposedCampaignsList);
             emit CampaignRejected(campaignAddress);
         }
     }    
 
-    function isInProposedCampaignsList(address campaignAddress) internal view returns (bool) {
-        for (uint256 i = 0; i < proposedCampaignsList.length; i++) {
-            if (proposedCampaignsList[i] == campaignAddress) {
+    function isCampaignInList(address campaignAddress, address[] memory list) internal pure returns (bool) {
+        for (uint256 i = 0; i < list.length; i++) {
+            if (list[i] == campaignAddress) {
                 return true;
             }
         }
