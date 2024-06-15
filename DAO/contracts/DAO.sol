@@ -7,14 +7,17 @@ import "./Campaign.sol";
 contract DAO {
     ManagerToken public managerToken;
 
-    struct CampaignProposal {
+    struct ProposedCampaign {
         address campaign;
         uint256 approvals;
         mapping(address => bool) approvedBy;
     }
 
-    mapping(address => CampaignProposal) public campaignProposals;
+    mapping(address => ProposedCampaign) private proposedCampaigns;
     uint256 public totalManagerTokens;
+
+    address[] private proposedCampaigns;
+    address[] private listedCampaigns;
 
     event CampaignCreated(address indexed campaignAddress, address indexed creator, uint256 goal, uint256 deadline);
     event CampaignApproved(address indexed campaignAddress, address indexed approver, uint256 approvals);
@@ -34,8 +37,9 @@ contract DAO {
         Campaign campaign = new Campaign(msg.sender, goal, deadline, address(managerToken));
         address campaignAddress = address(campaign);
 
-        CampaignProposal storage proposal = campaignProposals[campaignAddress];
+        ProposedCampaign storage proposal = proposedCampaigns[campaignAddress];
         proposal.campaign = campaignAddress;
+        proposedCampaigns.push(campaignAddress);
 
         emit CampaignCreated(campaignAddress, msg.sender, goal, deadline);
 
@@ -45,7 +49,7 @@ contract DAO {
     function approveCampaign(address campaignAddress) external {
         require(managerToken.balanceOf(msg.sender) > 0, "Only managers can approve campaigns");
 
-        CampaignProposal storage proposal = campaignProposals[campaignAddress];
+        ProposedCampaign storage proposal = proposedCampaigns[campaignAddress];
         require(proposal.campaign != address(0), "Campaign does not exist");
         require(!proposal.approvedBy[msg.sender], "Manager already approved this campaign");
 
@@ -55,14 +59,36 @@ contract DAO {
         emit CampaignApproved(campaignAddress, msg.sender, proposal.approvals);
 
         if (isCampaignApproved(campaignAddress)) {
-            approvedCampaigns[campaignAddress] = true;
+            listedCampaigns.push(campaignAddress);
+            removeProposedCampaign(campaignAddress);
         }
     }
 
     function isCampaignApproved(address campaignAddress) public view returns (bool) {
-        CampaignProposal storage proposal = campaignProposals[campaignAddress];
+        ProposedCampaign storage proposal = proposedCampaigns[campaignAddress];
         return proposal.approvals >= (totalManagerTokens * 66) / 100;
     }
 
-    mapping(address => bool) public approvedCampaigns;
+    function getProposedCampaign(address campaignAddress) public view returns (address, uint256) {
+        ProposedCampaign storage proposal = proposedCampaigns[campaignAddress];
+        return (proposal.campaign, proposal.approvals);
+    }
+
+    function getListedCampaigns() public view returns (address[] memory) {
+        return listedCampaigns;
+    }
+
+    function getProposedCampaigns() public view returns (address[] memory) {
+        return proposedCampaigns;
+    }
+
+    function removeProposedCampaign(address campaignAddress) internal {
+        for (uint256 i = 0; i < proposedCampaigns.length; i++) {
+            if (proposedCampaigns[i] == campaignAddress) {
+                proposedCampaigns[i] = proposedCampaigns[proposedCampaigns.length - 1];
+                proposedCampaigns.pop();
+                break;
+            }
+        }
+    }
 }
