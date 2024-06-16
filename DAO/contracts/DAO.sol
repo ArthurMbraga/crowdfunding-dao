@@ -103,11 +103,6 @@ contract DAO {
         return proposal.approvals >= (totalManagerTokens * 66) / 100;
     }
 
-    function getProposedCampaign(address campaignAddress) public view returns (address, uint256) {
-        ProposedCampaign storage proposal = proposedCampaigns[campaignAddress];
-        return (proposal.campaign, proposal.approvals);
-    }
-
     function getListedCampaigns() public view returns (address[] memory) {
         return listedCampaigns;
     }
@@ -132,9 +127,19 @@ contract DAO {
 
     function checkAndRejectExpiredProposals() external {
         for (uint256 i = proposedCampaignsList.length; i > 0; i--) {
-        address campaignAddress = proposedCampaignsList[i - 1];
-        checkAndExpire(campaignAddress);
-    }
+            address campaignAddress = proposedCampaignsList[i - 1];
+            checkAndExpire(campaignAddress);
+        }
+
+        for (uint256 i = listedCampaigns.length; i > 0; i--) {
+            Campaign campaign = Campaign(listedCampaigns[i - 1]);
+            isFundEnabled(campaign);
+        }
+
+        for (uint256 i = successfulCampaigns.length; i > 0; i--) {
+            Campaign campaign = Campaign(successfulCampaigns[i - 1]);
+            campaign.isVoteEnded();
+        }
     }
 
     function checkAndExpire(address campaignAddress) internal {
@@ -142,7 +147,7 @@ contract DAO {
         require(proposal.campaign != address(0), "Campaign does not exist");
         require(!isCampaignApproved(campaignAddress), "Campaign is already approved");
 
-        if (block.timestamp > proposal.creationTime + 5 minutes) {
+        if (block.timestamp > proposal.creationTime + 3 minutes) {
             rejectedCampaigns.push(campaignAddress);
             removeCampaignFromList(campaignAddress, proposedCampaignsList);
             emit CampaignRejected(campaignAddress);
@@ -179,7 +184,25 @@ contract DAO {
     function refund(address campaignAddress) public {
         require(isCampaignInList(campaignAddress, failedCampaigns), "Campaign is not failed");
         Campaign campaign = Campaign(campaignAddress);
-        campaign.refund();
+        campaign.refund(msg.sender);
     }
 
+    function withdrawFunds(address campaignAddress) public {
+        require(isCampaignInList(campaignAddress, successfulCampaigns), "Campaign is not successful");
+        Campaign campaign = Campaign(campaignAddress);
+        require(msg.sender == campaign.getOwner(), "Only owner can withdraw funds");
+        campaign.withdrawFunds();
+    }
+
+    function vote(address campaignAddress, bool fundsReleased) public {
+        require(isCampaignInList(campaignAddress, successfulCampaigns), "Campaign is not successful");
+        Campaign campaign = Campaign(campaignAddress);
+        campaign.vote(fundsReleased, msg.sender);
+    }
+
+    function convertToManagerTokens(address campaignAddress) public {
+        require(isCampaignInList(campaignAddress, successfulCampaigns), "Campaign is not successful");
+        Campaign campaign = Campaign(campaignAddress);
+        campaign.convertToManagerTokens(msg.sender);
+    }
 }
