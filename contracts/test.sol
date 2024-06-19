@@ -12,7 +12,7 @@ contract CrowdFunding {
         string image;
         address[] donators;
         uint256[] donations;
-    ***REMOVED***
+    }
 
     mapping(uint256 => Campaign) public campaigns;
     uint256 public numberOfCampaigns = 0;
@@ -43,7 +43,7 @@ contract CrowdFunding {
         numberOfCampaigns++;
 
         return numberOfCampaigns - 1;
-    ***REMOVED***
+    }
 
     function donateToCampaign(uint256 _id) public payable {
         uint256 amount = msg.value;
@@ -53,18 +53,18 @@ contract CrowdFunding {
         campaign.donators.push(msg.sender);
         campaign.donations.push(amount);
 
-        (bool sent, ) = payable(campaign.owner).call{value: amount***REMOVED***("");
+        (bool sent, ) = payable(campaign.owner).call{value: amount}("");
 
         if (sent) {
             campaign.amountCollected = campaign.amountCollected + amount;
-        ***REMOVED***
-    ***REMOVED***
+        }
+    }
 
     function getDonators(
         uint256 _id
     ) public view returns (address[] memory, uint256[] memory) {
         return (campaigns[_id].donators, campaigns[_id].donations);
-    ***REMOVED***
+    }
 
     function getCampaigns() public view returns (Campaign[] memory) {
         Campaign[] memory allCampaigns = new Campaign[](numberOfCampaigns);
@@ -73,8 +73,8 @@ contract CrowdFunding {
             Campaign storage item = campaigns[i];
 
             allCampaigns[i] = item;
-        ***REMOVED***
+        }
 
         return allCampaigns;
-    ***REMOVED***
-***REMOVED***
+    }
+}
